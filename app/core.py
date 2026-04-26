@@ -103,12 +103,13 @@ def serve_regular_drink(
         if state.favorite_drink is None and state.repeat_counters[drink] >= 3:
             state.favorite_drink = drink
 
-    # Update success_counter and generous_counter
-    state.success_counter += 1
+    # Update success_counter and generous_counter.
+    # free_every_7th does NOT advance the success counter (probed against live).
+    if not free_every_7th:
+        state.success_counter += 1
     if level == "generous":
         state.generous_counter += 1
     else:
-        # generous_counter resets on leaving generous (any non-generous success).
         state.generous_counter = 0
 
     # Build response.
