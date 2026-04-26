@@ -65,10 +65,16 @@ def _mood_adjust(price: int, level: str) -> int:
 
 
 def price_for(drink: str, mood_level_str: str, *, rank: str = "Новичок", method: str = "order") -> int:
-    """Return the price the live API would charge."""
+    """Return the price the live API would charge.
+
+    Probed: /mix is consistently 2 cheaper than /order *at the base price*, then the same mood
+    multipliers are applied. Crown ignores the mix discount.
+    """
     base = BASE_NORMAL_PRICE.get(drink, 0)
     if base == 0:
         return 0
+    if method == "mix" and drink != "Коронный":
+        base = max(0, base - 2)
     return _mood_adjust(base, mood_level_str)
 
 
